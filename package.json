@@ -1,0 +1,31 @@
+{
+  "name": "projekt_bazy",
+  "version": "1.0.0",
+  "description": "Projekt pogramistyczny z przedmiotu Bazy Danych na II UWr",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ibodi/Data-bases-project.git"
+  },
+  "keywords": [
+    "bazy",
+    "projekt",
+    "uwr",
+    "ii",
+    "ii uwr"
+  ],
+  "author": "Bohdan Shcherbak",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ibodi/Data-bases-project/issues"
+  },
+  "homepage": "https://github.com/ibodi/Data-bases-project#readme",
+  "dependencies": {
+    "dateformat": "^3.0.3",
+    "pg": "^7.11.0"
+  }
+}
