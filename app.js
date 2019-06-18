@@ -13,22 +13,38 @@ let p = x => x;
 
 async function *getCommandIterator(){
     for await (const command of readline) {
+        if (command == "") continue;
         yield command;
     }
     readline.close();
 }
 
 async function openDbAndGetPool(iterator) {
-
-    let { open: { database, login, password } } =
-        JSON.parse((await iterator.next()).value);
-    return new Pool({
-        user: login,
-        host: 'localhost',
-        database: database,
-        password: password,
-        port: 5432
-    });
+    while(true) {
+        let database_, login_, password_;
+        try {
+            let openCommand = await iterator.next();
+            if (openCommand.done) {
+                return;
+            }
+            let { open: { database, login, password } } =
+                JSON.parse(openCommand.value);
+            database_ = database;
+            login_ = login;
+            password_ = password;
+        } catch(err) {
+            console.log(JSON.stringify({ status: "ERROR" }));
+            console.error(err);
+            continue;
+        }
+        return new Pool({
+            user: login_,
+            host: 'localhost',
+            database: database_,
+            password: password_,
+            port: 5432
+        });
+    }
 }
 
 if (process.argv.length > 3 || (process.argv.length == 3
@@ -49,6 +65,9 @@ is "--init", or without arguments, but you have given such arguments:\
         let client_;
         try {
             pool_ = await openDbAndGetPool(it);
+            if (pool_ === undefined) {
+                return;
+            }
             client_ = await pool_.connect();
 
             console.log(JSON.stringify({ status: "OK" }));
@@ -83,6 +102,9 @@ is "--init", or without arguments, but you have given such arguments:\
             try {
                 pool.end();
             } catch (err) {}
+            try {
+                readline.close();
+            } catch (err) {}
             return;
         }
 
@@ -91,6 +113,7 @@ is "--init", or without arguments, but you have given such arguments:\
             try {
                 helpObject = JSON.parse(command);
             } catch (err) {
+                console.log(JSON.stringify({ status: "ERROR" }));
                 console.error(err);
                 continue;
             }
@@ -137,6 +160,9 @@ is "--init", or without arguments, but you have given such arguments:\
         let client_;
         try {
             pool_ = await openDbAndGetPool(it);
+            if (pool_ === undefined) {
+                return;
+            }
             client_ = await pool_.connect();
 
             console.log(JSON.stringify({ status: "OK" }));
@@ -163,6 +189,7 @@ is "--init", or without arguments, but you have given such arguments:\
             try {
                 helpObject = JSON.parse(command);
             } catch (err) {
+                console.log(JSON.stringify({ status: "ERROR" }));
                 console.error(err);
                 continue;
             }
@@ -420,7 +447,8 @@ is "--init", or without arguments, but you have given such arguments:\
                     }
                     break;
                 default:
-                    console.error("Impossible");
+                    console.log(JSON.stringify({ status: "ERROR" }));
+                    console.error("The API function that was tried to be called doesn't have the proper format.");
             }
         }
 

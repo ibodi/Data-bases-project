@@ -1,13 +1,4 @@
 
--- \c ibodi
--- DROP DATABASE bazy;
--- DROP USER app;
--- CREATE DATABASE bazy;
--- GRANT ALL PRIVILEGES ON DATABASE bazy TO init;
--- \c bazy
--- CREATE EXTENSION pgcrypto;
-
-
 CREATE TYPE id_type AS ENUM ('member', 'action', 'project', 'authority');
 CREATE TYPE action_type AS ENUM ('support', 'protest');
 CREATE TYPE vote_type AS ENUM ('up', 'down');
@@ -611,3 +602,13 @@ GRANT SELECT, INSERT ON TABLE leader_ids TO app;
 GRANT SELECT, INSERT ON TABLE votes TO app;
 GRANT SELECT, INSERT, UPDATE ON TABLE actions TO app;
 GRANT SELECT, INSERT, UPDATE ON TABLE members TO app;
+
+
+-- -- USEFULL COMMANDS: remove and create db bazy and user app.
+-- \c ibodi
+-- DROP DATABASE bazy;
+-- DROP USER app;
+-- CREATE DATABASE bazy;
+-- GRANT ALL PRIVILEGES ON DATABASE bazy TO init;
+-- \c bazy
+-- CREATE EXTENSION pgcrypto;
